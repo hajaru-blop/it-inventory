@@ -14,82 +14,97 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
-    * {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-    }
+    * { font-family: 'Plus Jakarta Sans', sans-serif; }
+    
     body {
-      background-color: #eef2f6;
+      background: linear-gradient(135deg, #eef2f6 0%, #ffefe8 50%, #e2e8f0 100%);
     }
-    .neu-flat {
-      background: #eef2f6;
-      box-shadow: 8px 8px 18px #cbd2db, -8px -8px 18px #ffffff;
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.65);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
       border-radius: 1.25rem;
     }
-    .neu-pressed {
-      background: #eef2f6;
-      box-shadow: inset 4px 4px 8px #cbd2db, inset -4px -4px 8px #ffffff;
+
+    .glass-input {
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(209, 213, 219, 0.6);
       border-radius: 0.75rem;
     }
-    .neu-btn-orange {
-      background: #ff6b2c;
+
+    .glass-btn-orange {
+      background: rgba(255, 107, 44, 0.95);
+      backdrop-filter: blur(4px);
       color: #ffffff;
-      box-shadow: 4px 4px 10px #d4521f, -2px -2px 6px #ffffff;
+      box-shadow: 0 6px 16px rgba(255, 107, 44, 0.3);
       transition: all 0.2s ease;
     }
-    .neu-btn-black {
-      background: #111827;
+    .glass-btn-orange:hover { background: #ff6b2c; }
+
+    .glass-btn-black {
+      background: rgba(17, 24, 39, 0.95);
+      backdrop-filter: blur(4px);
       color: #ffffff;
-      box-shadow: 4px 4px 10px #cbd2db, -2px -2px 6px #ffffff;
+      box-shadow: 0 6px 16px rgba(17, 24, 39, 0.2);
       transition: all 0.2s ease;
     }
+    .glass-btn-black:hover { background: #111827; }
   </style>
 </head>
-<body class="min-h-screen text-black flex">
+<body class="min-h-screen text-black flex relative overflow-x-hidden">
 
-  <!-- SIDEBAR NAVIGATION -->
-  <aside class="w-64 p-6 flex flex-col justify-between min-h-screen fixed inset-y-0 left-0 z-50 neu-flat rounded-none rounded-r-3xl">
+  <!-- Ambient Glow Effects -->
+  <div class="fixed top-10 left-64 w-96 h-96 bg-[#ff6b2c]/15 rounded-full blur-3xl pointer-events-none"></div>
+  <div class="fixed bottom-10 right-10 w-96 h-96 bg-slate-400/20 rounded-full blur-3xl pointer-events-none"></div>
+
+  <!-- GLASS SIDEBAR NAVIGATION -->
+  <aside class="w-64 p-6 flex flex-col justify-between min-h-screen fixed inset-y-0 left-0 z-50 glass-card rounded-none rounded-r-3xl border-l-0">
     <div class="space-y-8">
       <div class="px-2 space-y-3">
         <img src="logo.png" alt="Reservoir Link Logo" class="h-10 object-contain">
         <div class="flex items-center gap-2">
-          <div class="bg-[#ff6b2c] text-white font-extrabold px-2.5 py-1 rounded-lg text-xs">IT</div>
+          <div class="bg-[#ff6b2c] text-white font-extrabold px-2.5 py-1 rounded-lg text-xs shadow-md">IT</div>
           <span class="font-extrabold text-black text-lg tracking-wide">Portal System</span>
         </div>
       </div>
       <nav class="space-y-3">
-        <a href="dashboard.html" class="flex items-center px-4 py-3 rounded-xl text-slate-700 hover:text-black font-extrabold text-xs uppercase tracking-wider transition">
+        <a href="dashboard.html" class="flex items-center px-4 py-3 rounded-xl text-slate-700 hover:text-black font-extrabold text-xs uppercase tracking-wider transition hover:bg-white/40">
           Dashboard
         </a>
-        <a href="inventory.html" class="flex items-center px-4 py-3 rounded-xl neu-btn-orange font-extrabold text-xs uppercase tracking-wider">
+        <a href="inventory.html" class="flex items-center px-4 py-3 rounded-xl glass-btn-orange font-extrabold text-xs uppercase tracking-wider">
           Inventory List
         </a>
       </nav>
     </div>
-    <div class="space-y-4 pt-4 border-t border-slate-300">
+    <div class="space-y-4 pt-4 border-t border-slate-300/60">
       <div class="px-2">
         <p class="text-[10px] text-slate-500 uppercase font-extrabold tracking-widest">Logged In As</p>
         <p id="user-display" class="text-xs text-black font-extrabold truncate mt-1">Loading...</p>
       </div>
-      <button onclick="handleSignOut()" class="w-full neu-btn-black font-extrabold py-2.5 px-4 rounded-xl text-xs uppercase tracking-wider text-center">
+      <button onclick="handleSignOut()" class="w-full glass-btn-black font-extrabold py-2.5 px-4 rounded-xl text-xs uppercase tracking-wider text-center">
         Sign Out
       </button>
     </div>
   </aside>
 
   <!-- MAIN CONTENT -->
-  <main class="flex-1 ml-64 p-8 space-y-8">
+  <main class="flex-1 ml-64 p-8 space-y-8 z-10">
     <div class="flex justify-between items-center">
       <h1 class="text-3xl font-extrabold text-black tracking-tight">Inventory Management</h1>
     </div>
 
     <!-- TOOLBAR -->
-    <div class="neu-flat p-5 flex flex-wrap gap-4 justify-between items-center">
-      <input type="text" id="search-input" oninput="filterInventory()" placeholder="Search company, brand, model..." class="neu-pressed px-5 py-3 text-sm font-bold outline-none w-full md:w-80 text-black">
+    <div class="glass-card p-5 flex flex-wrap gap-4 justify-between items-center">
+      <input type="text" id="search-input" oninput="filterInventory()" placeholder="Search company, brand, model..." class="glass-input px-5 py-3 text-sm font-bold outline-none w-full md:w-80 text-black">
 
       <div class="flex flex-wrap items-center gap-4">
-        <button onclick="openAddModal()" class="neu-btn-orange font-extrabold px-5 py-3 rounded-xl text-xs uppercase tracking-wider">Add Item</button>
-        <button onclick="exportToExcel()" class="neu-btn-black font-extrabold px-5 py-3 rounded-xl text-xs uppercase tracking-wider">Export Excel</button>
-        <label class="neu-btn-black font-extrabold px-5 py-3 rounded-xl text-xs uppercase tracking-wider cursor-pointer">
+        <button onclick="openAddModal()" class="glass-btn-orange font-extrabold px-5 py-3 rounded-xl text-xs uppercase tracking-wider">Add Item</button>
+        <button onclick="exportToExcel()" class="glass-btn-black font-extrabold px-5 py-3 rounded-xl text-xs uppercase tracking-wider">Export Excel</button>
+        <label class="glass-btn-black font-extrabold px-5 py-3 rounded-xl text-xs uppercase tracking-wider cursor-pointer">
           <span>Import Excel</span>
           <input type="file" id="excel-file-input" accept=".xlsx, .xls, .csv" onchange="importFromExcel(event)" class="hidden">
         </label>
@@ -97,10 +112,9 @@
     </div>
 
     <!-- DATA TABLE -->
-    <div class="neu-flat overflow-hidden p-2">
+    <div class="glass-card overflow-hidden p-2">
       <table class="w-full text-left text-sm text-slate-800">
-        <!-- PROMINENT COLUMN HEADERS -->
-        <thead class="text-sm uppercase font-extrabold text-slate-900 border-b border-slate-300">
+        <thead class="text-sm uppercase font-extrabold text-slate-900 border-b border-slate-300/60">
           <tr>
             <th class="px-6 py-4">Company</th>
             <th class="px-6 py-4">Name</th>
@@ -111,7 +125,7 @@
             <th class="px-6 py-4 text-right">Action</th>
           </tr>
         </thead>
-        <tbody id="inventory-tbody" class="divide-y divide-slate-200 font-semibold text-sm">
+        <tbody id="inventory-tbody" class="divide-y divide-slate-200/60 font-semibold text-sm">
           <tr><td colspan="7" class="px-6 py-8 text-center text-slate-400 font-bold">Loading data...</td></tr>
         </tbody>
       </table>
@@ -119,42 +133,42 @@
   </main>
 
   <!-- ADD / EDIT MODAL -->
-  <div id="item-modal" class="hidden fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-    <div class="neu-flat p-8 w-full max-w-md space-y-5">
+  <div id="item-modal" class="hidden fixed inset-0 bg-black/30 backdrop-blur-md flex items-center justify-center p-4 z-50">
+    <div class="glass-card p-8 w-full max-w-md space-y-5">
       <h3 id="modal-title" class="text-xl font-extrabold text-black">Add New Equipment</h3>
       <form id="item-form" onsubmit="handleSaveItem(event)" class="space-y-4">
         <input type="hidden" id="item-id">
         <div>
           <label class="block text-xs font-extrabold text-slate-700 uppercase mb-1">Company</label>
-          <input type="text" id="item-company" required class="neu-pressed w-full px-4 py-3 text-sm font-bold outline-none">
+          <input type="text" id="item-company" required class="glass-input w-full px-4 py-3 text-sm font-bold outline-none">
         </div>
         <div>
           <label class="block text-xs font-extrabold text-slate-700 uppercase mb-1">Name</label>
-          <input type="text" id="item-name" required placeholder="e.g. LAPTOP" class="neu-pressed w-full px-4 py-3 text-sm font-bold outline-none">
+          <input type="text" id="item-name" required placeholder="e.g. LAPTOP" class="glass-input w-full px-4 py-3 text-sm font-bold outline-none">
         </div>
         <div>
           <label class="block text-xs font-extrabold text-slate-700 uppercase mb-1">Model</label>
-          <input type="text" id="item-model" required class="neu-pressed w-full px-4 py-3 text-sm font-bold outline-none">
+          <input type="text" id="item-model" required class="glass-input w-full px-4 py-3 text-sm font-bold outline-none">
         </div>
         <div>
           <label class="block text-xs font-extrabold text-slate-700 uppercase mb-1">Brand</label>
-          <input type="text" id="item-brand" required class="neu-pressed w-full px-4 py-3 text-sm font-bold outline-none">
+          <input type="text" id="item-brand" required class="glass-input w-full px-4 py-3 text-sm font-bold outline-none">
         </div>
         <div>
           <label class="block text-xs font-extrabold text-slate-700 uppercase mb-1">Workbase</label>
-          <input type="text" id="item-workbase" required placeholder="e.g. KL" class="neu-pressed w-full px-4 py-3 text-sm font-bold outline-none">
+          <input type="text" id="item-workbase" required placeholder="e.g. KL" class="glass-input w-full px-4 py-3 text-sm font-bold outline-none">
         </div>
         <div>
           <label class="block text-xs font-extrabold text-slate-700 uppercase mb-1">Status</label>
-          <select id="item-status" class="neu-pressed w-full px-4 py-3 text-sm font-bold outline-none">
+          <select id="item-status" class="glass-input w-full px-4 py-3 text-sm font-bold outline-none">
             <option value="In Use">In Use</option>
             <option value="In Stock">In Stock</option>
             <option value="Repair">Repair</option>
           </select>
         </div>
         <div class="flex justify-end gap-3 pt-3">
-          <button type="button" onclick="closeModal()" class="neu-btn-black px-5 py-2.5 rounded-xl text-xs uppercase font-extrabold">Cancel</button>
-          <button type="submit" class="neu-btn-orange px-5 py-2.5 rounded-xl text-xs uppercase font-extrabold">Save</button>
+          <button type="button" onclick="closeModal()" class="glass-btn-black px-5 py-2.5 rounded-xl text-xs uppercase font-extrabold">Cancel</button>
+          <button type="submit" class="glass-btn-orange px-5 py-2.5 rounded-xl text-xs uppercase font-extrabold">Save</button>
         </div>
       </form>
     </div>
