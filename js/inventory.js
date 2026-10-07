@@ -43,11 +43,11 @@ function renderTable(data) {
 function filterInventory() {
   const query = document.getElementById('search-input').value.toLowerCase();
   const filtered = rawInventoryData.filter(item => 
-    item.company.toLowerCase().includes(query) ||
-    item.name.toLowerCase().includes(query) ||
-    item.model.toLowerCase().includes(query) ||
-    item.brand.toLowerCase().includes(query) ||
-    item.workbase.toLowerCase().includes(query)
+    (item.company && item.company.toLowerCase().includes(query)) ||
+    (item.name && item.name.toLowerCase().includes(query)) ||
+    (item.model && item.model.toLowerCase().includes(query)) ||
+    (item.brand && item.brand.toLowerCase().includes(query)) ||
+    (item.workbase && item.workbase.toLowerCase().includes(query))
   );
   renderTable(filtered);
 }
@@ -127,5 +127,12 @@ function importFromExcel(event) {
 function openModal() { document.getElementById('add-modal').classList.remove('hidden'); }
 function closeModal() { document.getElementById('add-modal').classList.add('hidden'); }
 
-// Initialize data load
+// Enable Realtime Sync
+supabaseClient
+  .channel('inventory-list-changes')
+  .on('postgres_changes', { event: '*', schema: 'public', table: 'it_inventory' }, () => {
+    loadInventory();
+  })
+  .subscribe();
+
 loadInventory();
