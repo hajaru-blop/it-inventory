@@ -6,8 +6,20 @@
   <title>IT Portal - Sign In</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Typography: Lora & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
   <style>
-    body { background-color: #eef2f6; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #eef2f6;
+    }
+    h1, h2, h3, .font-serif {
+      font-family: 'Lora', serif;
+    }
     .neu-card {
       background: #eef2f6;
       box-shadow: 12px 12px 24px #cbd2db, -12px -12px 24px #ffffff;
@@ -32,25 +44,26 @@
     .neu-btn-black:hover { background: #1f2937; }
   </style>
 </head>
-<body class="flex items-center justify-center min-h-screen p-4 font-sans text-slate-900">
+<body class="flex items-center justify-center min-h-screen p-4 text-slate-900">
 
   <div class="neu-card p-8 w-full max-w-md">
     <div class="text-center mb-8">
-      <div class="inline-block bg-[#ff6b2c] text-white font-extrabold px-5 py-2.5 rounded-xl text-sm shadow-md tracking-wider uppercase mb-3">
+      <img src="logo.png" alt="Reservoir Link Logo" class="h-14 mx-auto mb-4 object-contain">
+      <div class="inline-block bg-[#ff6b2c] text-white font-bold px-5 py-2 rounded-xl text-xs tracking-wider uppercase mb-3">
         IT Inventory
       </div>
-      <h1 class="text-3xl font-black text-black tracking-tight">Company Portal</h1>
+      <h1 class="text-3xl font-normal text-black italic tracking-tight">Company Portal</h1>
       <p class="text-xs font-semibold text-slate-500 mt-1 uppercase tracking-widest">Sign in to manage equipment</p>
     </div>
 
     <form onsubmit="handleAuth(event)" class="space-y-5">
       <div>
-        <label class="block text-xs font-extrabold text-black uppercase mb-2 tracking-wider">Email Address</label>
+        <label class="block text-xs font-bold text-black uppercase mb-2 tracking-wider">Email Address</label>
         <input type="email" id="email" required class="neu-input w-full px-4 py-3 outline-none text-black text-sm font-medium">
       </div>
 
       <div>
-        <label class="block text-xs font-extrabold text-black uppercase mb-2 tracking-wider">Password</label>
+        <label class="block text-xs font-bold text-black uppercase mb-2 tracking-wider">Password</label>
         <div class="relative">
           <input type="password" id="password" required class="neu-input w-full px-4 py-3 pr-12 outline-none text-black text-sm font-medium">
           <button type="button" onclick="togglePasswordVisibility()" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-500 hover:text-black">
