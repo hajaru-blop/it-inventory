@@ -8,18 +8,17 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <!-- Typography: Lora & Plus Jakarta Sans -->
+  <!-- Plus Jakarta Sans Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
-    body {
+    * {
       font-family: 'Plus Jakarta Sans', sans-serif;
-      background-color: #eef2f6;
     }
-    h1, h2, h3, .font-serif {
-      font-family: 'Lora', serif;
+    body {
+      background-color: #eef2f6;
     }
     .neu-flat {
       background: #eef2f6;
@@ -53,25 +52,25 @@
       <div class="px-2 space-y-3">
         <img src="logo.png" alt="Reservoir Link Logo" class="h-10 object-contain">
         <div class="flex items-center gap-2">
-          <div class="bg-[#ff6b2c] text-white font-bold px-2.5 py-1 rounded-lg text-xs">IT</div>
-          <span class="font-serif italic text-black text-lg tracking-wide">Portal System</span>
+          <div class="bg-[#ff6b2c] text-white font-extrabold px-2.5 py-1 rounded-lg text-xs">IT</div>
+          <span class="font-extrabold text-black text-lg tracking-wide">Portal System</span>
         </div>
       </div>
       <nav class="space-y-3">
-        <a href="dashboard.html" class="flex items-center px-4 py-3 rounded-xl neu-btn-orange font-bold text-xs uppercase tracking-wider">
+        <a href="dashboard.html" class="flex items-center px-4 py-3 rounded-xl neu-btn-orange font-extrabold text-xs uppercase tracking-wider">
           Dashboard
         </a>
-        <a href="inventory.html" class="flex items-center px-4 py-3 rounded-xl text-slate-700 hover:text-black font-bold text-xs uppercase tracking-wider transition">
+        <a href="inventory.html" class="flex items-center px-4 py-3 rounded-xl text-slate-700 hover:text-black font-extrabold text-xs uppercase tracking-wider transition">
           Inventory List
         </a>
       </nav>
     </div>
     <div class="space-y-4 pt-4 border-t border-slate-300">
       <div class="px-2">
-        <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Logged In As</p>
-        <p id="user-display" class="text-xs text-black font-bold truncate mt-1">Loading...</p>
+        <p class="text-[10px] text-slate-500 uppercase font-extrabold tracking-widest">Logged In As</p>
+        <p id="user-display" class="text-xs text-black font-extrabold truncate mt-1">Loading...</p>
       </div>
-      <button onclick="handleSignOut()" class="w-full neu-btn-black font-bold py-2.5 px-4 rounded-xl text-xs uppercase tracking-wider text-center">
+      <button onclick="handleSignOut()" class="w-full neu-btn-black font-extrabold py-2.5 px-4 rounded-xl text-xs uppercase tracking-wider text-center">
         Sign Out
       </button>
     </div>
@@ -83,25 +82,25 @@
     <div class="neu-flat p-5 flex flex-wrap items-center justify-between gap-4">
       <div class="flex flex-wrap items-center gap-6">
         <div>
-          <label class="block text-xs font-bold text-slate-600 uppercase mb-2 tracking-wider">Brand</label>
-          <select id="filter-brand" onchange="applyFilters()" class="neu-pressed px-4 py-2 text-xs font-bold text-black outline-none min-w-[140px]">
+          <label class="block text-xs font-extrabold text-slate-700 uppercase mb-2 tracking-wider">Brand</label>
+          <select id="filter-brand" onchange="applyFilters()" class="neu-pressed px-4 py-2 text-xs font-extrabold text-black outline-none min-w-[140px]">
             <option value="All">All</option>
           </select>
         </div>
         <div>
-          <label class="block text-xs font-bold text-slate-600 uppercase mb-2 tracking-wider">Workbase</label>
-          <select id="filter-workbase" onchange="applyFilters()" class="neu-pressed px-4 py-2 text-xs font-bold text-black outline-none min-w-[140px]">
+          <label class="block text-xs font-extrabold text-slate-700 uppercase mb-2 tracking-wider">Workbase</label>
+          <select id="filter-workbase" onchange="applyFilters()" class="neu-pressed px-4 py-2 text-xs font-extrabold text-black outline-none min-w-[140px]">
             <option value="All">All</option>
           </select>
         </div>
         <div>
-          <label class="block text-xs font-bold text-slate-600 uppercase mb-2 tracking-wider">Status</label>
-          <select id="filter-status" onchange="applyFilters()" class="neu-pressed px-4 py-2 text-xs font-bold text-black outline-none min-w-[140px]">
+          <label class="block text-xs font-extrabold text-slate-700 uppercase mb-2 tracking-wider">Status</label>
+          <select id="filter-status" onchange="applyFilters()" class="neu-pressed px-4 py-2 text-xs font-extrabold text-black outline-none min-w-[140px]">
             <option value="All">All</option>
           </select>
         </div>
       </div>
-      <button onclick="resetFilters()" class="neu-btn-black text-xs font-bold px-5 py-2.5 rounded-xl uppercase tracking-wider">
+      <button onclick="resetFilters()" class="neu-btn-black text-xs font-extrabold px-5 py-2.5 rounded-xl uppercase tracking-wider">
         Reset filters
       </button>
     </div>
@@ -109,48 +108,48 @@
     <!-- KPI CARDS GRID -->
     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
       <div class="neu-flat p-6 flex flex-col justify-between">
-        <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Total Assets</span>
-        <span id="kpi-total" class="font-serif text-5xl font-normal text-black mt-3">0</span>
+        <span class="text-xs font-extrabold uppercase tracking-wider text-slate-500">Total Assets</span>
+        <span id="kpi-total" class="text-5xl font-black text-black mt-3">0</span>
       </div>
       <div class="neu-flat p-6 flex flex-col justify-between border-l-8 border-l-[#ff6b2c]">
-        <span class="text-xs font-bold uppercase tracking-wider text-[#ff6b2c]">In Stock</span>
-        <span id="kpi-stock" class="font-serif text-5xl font-normal text-black mt-3">0</span>
+        <span class="text-xs font-extrabold uppercase tracking-wider text-[#ff6b2c]">In Stock</span>
+        <span id="kpi-stock" class="text-5xl font-black text-black mt-3">0</span>
       </div>
       <div class="neu-flat p-6 flex flex-col justify-between border-l-8 border-l-emerald-500">
-        <span class="text-xs font-bold uppercase tracking-wider text-emerald-600">In Use</span>
-        <span id="kpi-use" class="font-serif text-5xl font-normal text-black mt-3">0</span>
+        <span class="text-xs font-extrabold uppercase tracking-wider text-emerald-600">In Use</span>
+        <span id="kpi-use" class="text-5xl font-black text-black mt-3">0</span>
       </div>
       <div class="neu-flat p-6 flex flex-col justify-between border-l-8 border-l-slate-800">
-        <span class="text-xs font-bold uppercase tracking-wider text-slate-800">Repair</span>
-        <span id="kpi-repair" class="font-serif text-5xl font-normal text-black mt-3">0</span>
+        <span class="text-xs font-extrabold uppercase tracking-wider text-slate-800">Repair</span>
+        <span id="kpi-repair" class="text-5xl font-black text-black mt-3">0</span>
       </div>
     </div>
 
     <!-- CHARTS GRID -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
       <div class="neu-flat p-6">
-        <h2 class="text-sm font-normal italic font-serif text-slate-700 mb-4">Count of ID by Workbase</h2>
+        <h2 class="text-xs font-extrabold uppercase tracking-wider text-slate-700 mb-4">Count of ID by Workbase</h2>
         <div class="h-64 relative">
           <canvas id="chart-workbase"></canvas>
         </div>
       </div>
 
       <div class="neu-flat p-6">
-        <h2 class="text-sm font-normal italic font-serif text-slate-700 mb-4">Count of ID by Status</h2>
+        <h2 class="text-xs font-extrabold uppercase tracking-wider text-slate-700 mb-4">Count of ID by Status</h2>
         <div class="h-64 relative">
           <canvas id="chart-status"></canvas>
         </div>
       </div>
 
       <div class="neu-flat p-6">
-        <h2 class="text-sm font-normal italic font-serif text-slate-700 mb-4">Count of ID by Company</h2>
+        <h2 class="text-xs font-extrabold uppercase tracking-wider text-slate-700 mb-4">Count of ID by Company</h2>
         <div class="h-64 relative">
           <canvas id="chart-company"></canvas>
         </div>
       </div>
 
       <div class="neu-flat p-6 md:col-span-3">
-        <h2 class="text-sm font-normal italic font-serif text-slate-700 mb-4">Count of ID by Brand</h2>
+        <h2 class="text-xs font-extrabold uppercase tracking-wider text-slate-700 mb-4">Count of ID by Brand</h2>
         <div class="h-64 relative">
           <canvas id="chart-brand"></canvas>
         </div>
