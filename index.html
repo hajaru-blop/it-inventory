@@ -1,179 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>IT Inventory System</title>
-  <!-- Tailwind CSS for styling -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IT Portal - Sign In</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Supabase Official JS SDK -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
-<body class="bg-gray-100 min-h-screen p-4 sm:p-8">
+<body class="bg-slate-100 flex items-center justify-center min-h-screen p-4 font-sans">
 
-  <div class="max-w-6xl mx-auto bg-white rounded-xl shadow-md overflow-hidden">
-    <!-- Header -->
-    <div class="p-6 border-b flex flex-wrap justify-between items-center gap-4">
+  <div class="bg-white p-8 rounded-xl shadow-md w-full max-w-md border border-slate-200">
+    <div class="text-center mb-6">
+      <div class="inline-block bg-blue-600 text-white font-bold px-4 py-2 rounded-lg mb-2">IT INVENTORY</div>
+      <h1 class="text-2xl font-bold text-slate-800">Company Portal</h1>
+      <p class="text-sm text-slate-500">Sign in to manage equipment and records</p>
+    </div>
+
+    <form onsubmit="handleAuth(event)" class="space-y-4">
       <div>
-        <span class="text-xs font-bold text-gray-400 uppercase tracking-wider">MS Sites</span>
-        <h1 class="text-2xl font-bold text-gray-800">IT Inventory</h1>
+        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Email</label>
+        <input type="email" id="email" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
       </div>
-      <button onclick="toggleModal(true)" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium text-sm flex items-center gap-2">
-        <span>+</span> Add Item
-      </button>
-    </div>
 
-    <!-- Inventory Table -->
-    <div class="overflow-x-auto">
-      <table class="w-full text-left border-collapse">
-        <thead>
-          <tr class="border-b text-xs font-semibold text-gray-500 uppercase bg-gray-50">
-            <th class="p-4">No.</th>
-            <th class="p-4">Company</th>
-            <th class="p-4">Name</th>
-            <th class="p-4">Model</th>
-            <th class="p-4">Brand</th>
-            <th class="p-4">Workbase</th>
-            <th class="p-4">Status</th>
-          </tr>
-        </thead>
-        <tbody id="inventory-table-body" class="divide-y divide-gray-100 text-sm">
-          <tr>
-            <td colspan="7" class="p-8 text-center text-gray-400">Loading inventory from cloud...</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+      <div>
+        <label class="block text-xs font-semibold text-slate-600 uppercase mb-1">Password</label>
+        <input type="password" id="password" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+        <p class="text-xs text-slate-400 mt-1">Min 8 chars: 1 uppercase, 1 lowercase, 1 number, 1 symbol.</p>
+      </div>
+
+      <div id="auth-error" class="hidden p-3 bg-red-50 border border-red-200 text-red-600 text-xs rounded-lg"></div>
+
+      <div class="flex gap-3 pt-2">
+        <button type="submit" onclick="authMode='login'" class="w-1/2 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 rounded-lg transition">Sign In</button>
+        <button type="submit" onclick="authMode='signup'" class="w-1/2 bg-slate-600 hover:bg-slate-700 text-white font-medium py-2 rounded-lg transition">Register</button>
+      </div>
+    </form>
   </div>
 
-  <!-- Add Item Modal -->
-  <div id="item-modal" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center p-4 z-50">
-    <div class="bg-white p-6 rounded-xl shadow-xl max-w-md w-full">
-      <h2 class="text-lg font-bold text-gray-800 mb-4">Add IT Asset</h2>
-      <form id="add-item-form" class="space-y-3">
-        <div>
-          <label class="text-xs text-gray-500 font-semibold">Company Tag</label>
-          <input type="text" id="company" placeholder="e.g. AMS, RLR" class="w-full border p-2 rounded mt-1" required />
-        </div>
-        <div>
-          <label class="text-xs text-gray-500 font-semibold">Asset Category/Name</label>
-          <input type="text" id="name" placeholder="e.g. LAPTOP" class="w-full border p-2 rounded mt-1" required />
-        </div>
-        <div>
-          <label class="text-xs text-gray-500 font-semibold">Model Number</label>
-          <input type="text" id="model" placeholder="e.g. MAC68, GHJ78" class="w-full border p-2 rounded mt-1" required />
-        </div>
-        <div>
-          <label class="text-xs text-gray-500 font-semibold">Brand</label>
-          <input type="text" id="brand" placeholder="e.g. APPLE, HP, DELL" class="w-full border p-2 rounded mt-1" required />
-        </div>
-        <div>
-          <label class="text-xs text-gray-500 font-semibold">Workbase Location</label>
-          <input type="text" id="workbase" placeholder="e.g. KL, LABUAN" class="w-full border p-2 rounded mt-1" required />
-        </div>
-        <div>
-          <label class="text-xs text-gray-500 font-semibold">Current Status</label>
-          <select id="status" class="w-full border p-2 rounded mt-1">
-            <option value="In Stock">In Stock</option>
-            <option value="In Use">In Use</option>
-            <option value="Repair">Repair</option>
-          </select>
-        </div>
-        <div class="flex justify-end gap-2 pt-4 border-t">
-          <button type="button" onclick="toggleModal(false)" class="px-4 py-2 border rounded text-sm text-gray-600">Cancel</button>
-          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded text-sm font-medium">Save Item</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
+  <script src="js/config.js"></script>
   <script>
-    // -------------------------------------------------------------
-    // REPLACE WITH YOUR REAL SUPABASE CREDENTIALS FROM STEP 1
-    // -------------------------------------------------------------
-    const SUPABASE_URL = 'https://frqdhwvigszahanvycit.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZycWRod3ZpZ3N6YWhhbnZ5Y2l0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA5MTk4NzksImV4cCI6MjEwNjQ5NTg3OX0.UoeSUqUOgREejHvQedQreqMAib5usqn88OVyaTK7Gnk';
-    
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    let authMode = 'login';
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-    // Fetch and render inventory items
-    async function loadInventory() {
-      const { data, error } = await supabaseClient
-        .from('it_inventory')
-        .select('*')
-        .order('id', { ascending: true });
-
-      if (error) {
-        console.error('Error reading database:', error);
-        alert('Could not load inventory: ' + error.message);
-        return;
-      }
-
-      const tbody = document.getElementById('inventory-table-body');
-      tbody.innerHTML = '';
-
-      if (data.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="p-6 text-center text-gray-400">No inventory records found.</td></tr>`;
-        return;
-      }
-
-      data.forEach((item, index) => {
-        // Status Badge Style matching original design
-        let statusBadge = '';
-        if (item.status === 'Repair') {
-          statusBadge = `<span class="bg-red-700 text-white px-3 py-1 rounded-full text-xs font-semibold">Repair</span>`;
-        } else if (item.status === 'In Stock') {
-          statusBadge = `<span class="bg-emerald-700 text-white px-3 py-1 rounded-full text-xs font-semibold">In Stock</span>`;
-        } else {
-          statusBadge = `<span class="bg-amber-700 text-white px-3 py-1 rounded-full text-xs font-semibold">In Use</span>`;
-        }
-
-        tbody.innerHTML += `
-          <tr class="hover:bg-gray-50">
-            <td class="p-4 text-gray-400">${index + 1}</td>
-            <td class="p-4">
-              <span class="bg-amber-100 text-amber-800 font-semibold px-2.5 py-1 rounded-full text-xs">${item.company}</span>
-            </td>
-            <td class="p-4 font-medium text-gray-700">${item.name}</td>
-            <td class="p-4 font-bold text-gray-900">${item.model}</td>
-            <td class="p-4 text-gray-600">${item.brand}</td>
-            <td class="p-4 text-gray-600 uppercase">${item.workbase}</td>
-            <td class="p-4">${statusBadge}</td>
-          </tr>
-        `;
-      });
-    }
-
-    // Insert new inventory row
-    document.getElementById('add-item-form').addEventListener('submit', async (e) => {
+    async function handleAuth(e) {
       e.preventDefault();
-      
-      const newItem = {
-        company: document.getElementById('company').value.toUpperCase(),
-        name: document.getElementById('name').value.toUpperCase(),
-        model: document.getElementById('model').value.toUpperCase(),
-        brand: document.getElementById('brand').value.toUpperCase(),
-        workbase: document.getElementById('workbase').value,
-        status: document.getElementById('status').value,
-      };
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      const errorDiv = document.getElementById('auth-error');
+      errorDiv.classList.add('hidden');
 
-      const { error } = await supabaseClient.from('it_inventory').insert([newItem]);
-      
-      if (error) {
-        alert('Error saving asset: ' + error.message);
-      } else {
-        toggleModal(false);
-        document.getElementById('add-item-form').reset();
-        loadInventory(); // Reload table
+      if (!passwordRegex.test(password)) {
+        errorDiv.innerText = "Password must contain 8+ characters with uppercase, lowercase, number, and symbol.";
+        errorDiv.classList.remove('hidden');
+        return;
       }
-    });
 
-    function toggleModal(show) {
-      document.getElementById('item-modal').classList.toggle('hidden', !show);
+      const { error } = (authMode === 'login') 
+        ? await supabaseClient.auth.signInWithPassword({ email, password })
+        : await supabaseClient.auth.signUp({ email, password });
+
+      if (error) {
+        errorDiv.innerText = error.message;
+        errorDiv.classList.remove('hidden');
+      } else {
+        window.location.href = 'dashboard.html';
+      }
     }
-
-    // Initial load when page loads
-    loadInventory();
   </script>
 </body>
 </html>
