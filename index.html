@@ -13,42 +13,66 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
-    * {
-      font-family: 'Plus Jakarta Sans', sans-serif;
-    }
+    * { font-family: 'Plus Jakarta Sans', sans-serif; }
+    
     body {
-      background-color: #eef2f6;
+      background: linear-gradient(135deg, #eef2f6 0%, #ffefe8 50%, #e2e8f0 100%);
     }
-    .neu-card {
-      background: #eef2f6;
-      box-shadow: 12px 12px 24px #cbd2db, -12px -12px 24px #ffffff;
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.65);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
       border-radius: 1.5rem;
     }
-    .neu-input {
-      background: #eef2f6;
-      box-shadow: inset 4px 4px 8px #cbd2db, inset -4px -4px 8px #ffffff;
+
+    .glass-input {
+      background: rgba(255, 255, 255, 0.5);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(209, 213, 219, 0.6);
       border-radius: 0.75rem;
+      transition: all 0.2s ease;
     }
-    .neu-btn-orange {
+    .glass-input:focus {
+      background: rgba(255, 255, 255, 0.85);
+      border-color: #ff6b2c;
+    }
+
+    .glass-btn-orange {
+      background: rgba(255, 107, 44, 0.95);
+      backdrop-filter: blur(4px);
+      box-shadow: 0 8px 20px rgba(255, 107, 44, 0.3);
+      transition: all 0.2s ease;
+    }
+    .glass-btn-orange:hover {
       background: #ff6b2c;
-      box-shadow: 5px 5px 12px #d4521f, -3px -3px 8px #ffffff;
+      transform: translateY(-1px);
+    }
+
+    .glass-btn-black {
+      background: rgba(17, 24, 39, 0.95);
+      backdrop-filter: blur(4px);
+      box-shadow: 0 8px 20px rgba(17, 24, 39, 0.2);
       transition: all 0.2s ease;
     }
-    .neu-btn-orange:hover { background: #e55a1f; }
-    .neu-btn-black {
+    .glass-btn-black:hover {
       background: #111827;
-      box-shadow: 5px 5px 12px #cbd2db, -3px -3px 8px #ffffff;
-      transition: all 0.2s ease;
+      transform: translateY(-1px);
     }
-    .neu-btn-black:hover { background: #1f2937; }
   </style>
 </head>
-<body class="flex items-center justify-center min-h-screen p-4 text-slate-900">
+<body class="flex items-center justify-center min-h-screen p-4 text-slate-900 relative overflow-hidden">
 
-  <div class="neu-card p-8 w-full max-w-md">
+  <!-- Ambient Glowing Glass Accents -->
+  <div class="absolute -top-24 -left-24 w-96 h-96 bg-[#ff6b2c]/20 rounded-full blur-3xl pointer-events-none"></div>
+  <div class="absolute -bottom-24 -right-24 w-96 h-96 bg-slate-400/20 rounded-full blur-3xl pointer-events-none"></div>
+
+  <div class="glass-card p-8 w-full max-w-md z-10">
     <div class="text-center mb-8">
       <img src="logo.png" alt="Reservoir Link Logo" class="h-14 mx-auto mb-4 object-contain">
-      <div class="inline-block bg-[#ff6b2c] text-white font-extrabold px-5 py-2 rounded-xl text-xs tracking-wider uppercase mb-3">
+      <div class="inline-block bg-[#ff6b2c] text-white font-extrabold px-5 py-2 rounded-xl text-xs tracking-wider uppercase mb-3 shadow-md">
         IT Inventory
       </div>
       <h1 class="text-3xl font-extrabold text-black tracking-tight">Company Portal</h1>
@@ -58,13 +82,13 @@
     <form onsubmit="handleAuth(event)" class="space-y-5">
       <div>
         <label class="block text-xs font-extrabold text-black uppercase mb-2 tracking-wider">Email Address</label>
-        <input type="email" id="email" required class="neu-input w-full px-4 py-3 outline-none text-black text-sm font-semibold">
+        <input type="email" id="email" required class="glass-input w-full px-4 py-3 outline-none text-black text-sm font-semibold">
       </div>
 
       <div>
         <label class="block text-xs font-extrabold text-black uppercase mb-2 tracking-wider">Password</label>
         <div class="relative">
-          <input type="password" id="password" required class="neu-input w-full px-4 py-3 pr-12 outline-none text-black text-sm font-semibold">
+          <input type="password" id="password" required class="glass-input w-full px-4 py-3 pr-12 outline-none text-black text-sm font-semibold">
           <button type="button" onclick="togglePasswordVisibility()" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-500 hover:text-black">
             <svg id="eye-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -75,11 +99,11 @@
         <p class="text-[11px] text-slate-500 mt-2 font-semibold">Min 8 chars: 1 uppercase, 1 lowercase, 1 number, 1 symbol.</p>
       </div>
 
-      <div id="auth-error" class="hidden p-3 neu-input text-red-600 text-xs font-extrabold"></div>
+      <div id="auth-error" class="hidden p-3 glass-input text-red-600 text-xs font-extrabold"></div>
 
       <div class="flex gap-4 pt-3">
-        <button type="submit" onclick="authMode='login'" class="w-1/2 neu-btn-orange text-white font-extrabold py-3 rounded-xl uppercase text-xs tracking-wider">Sign In</button>
-        <button type="submit" onclick="authMode='signup'" class="w-1/2 neu-btn-black text-white font-extrabold py-3 rounded-xl uppercase text-xs tracking-wider">Register</button>
+        <button type="submit" onclick="authMode='login'" class="w-1/2 glass-btn-orange text-white font-extrabold py-3 rounded-xl uppercase text-xs tracking-wider">Sign In</button>
+        <button type="submit" onclick="authMode='signup'" class="w-1/2 glass-btn-black text-white font-extrabold py-3 rounded-xl uppercase text-xs tracking-wider">Register</button>
       </div>
     </form>
   </div>
