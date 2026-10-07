@@ -5,7 +5,8 @@ let chartStatusInstance = null;
 let chartCompanyInstance = null;
 let chartBrandInstance = null;
 
-const COLOR_PALETTE = ['#2d5c68', '#c99a3b', '#a35638', '#4b7bec', '#26de81', '#a55eea', '#fd9644', '#264653'];
+// Orange, Black, White and Slate Palette
+const COLOR_PALETTE = ['#FF6B2C', '#111827', '#4B5563', '#9CA3AF', '#D1D5DB', '#E5E7EB'];
 
 async function fetchDashboardData() {
   const { data, error } = await supabaseClient.from('it_inventory').select('*');
@@ -89,7 +90,7 @@ function renderCharts(data) {
     type: 'bar',
     labels: Object.keys(statusCounts),
     data: Object.values(statusCounts),
-    colors: ['#2d5c68'],
+    colors: ['#FF6B2C'],
     indexAxis: 'y'
   });
 
@@ -108,7 +109,7 @@ function renderCharts(data) {
     type: 'bar',
     labels: Object.keys(brandCounts),
     data: Object.values(brandCounts),
-    colors: ['#2d5c68'],
+    colors: ['#111827'],
     indexAxis: 'x'
   });
 }
@@ -124,7 +125,7 @@ function createOrUpdateChart(instance, elementId, config) {
       datasets: [{
         data: config.data,
         backgroundColor: config.colors,
-        borderRadius: config.type === 'bar' ? 4 : 0
+        borderRadius: config.type === 'bar' ? 6 : 0
       }]
     },
     options: {
@@ -134,18 +135,18 @@ function createOrUpdateChart(instance, elementId, config) {
       plugins: {
         legend: {
           display: config.type === 'pie' || config.type === 'doughnut',
-          position: 'right'
+          position: 'right',
+          labels: { font: { weight: 'bold', size: 11 } }
         }
       },
       scales: config.type === 'bar' ? {
-        y: { beginAtZero: true, ticks: { precision: 0 } },
-        x: { beginAtZero: true, ticks: { precision: 0 } }
+        y: { beginAtZero: true, ticks: { precision: 0, font: { weight: 'bold' } } },
+        x: { beginAtZero: true, ticks: { precision: 0, font: { weight: 'bold' } } }
       } : {}
     }
   });
 }
 
-// Enable Supabase Realtime Auto-updates
 function setupRealtime() {
   supabaseClient
     .channel('dashboard-changes')
