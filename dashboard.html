@@ -3,89 +3,126 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IT Inventory Dashboard</title>
+  <title>IT Inventory - Analytics Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body class="bg-slate-50 min-h-screen text-slate-800 font-sans">
+<body class="bg-slate-100 min-h-screen text-slate-800 flex font-sans">
 
-  <!-- TOP NAVBAR -->
-  <nav class="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center shadow-sm">
-    <div class="flex items-center gap-6">
-      <span class="font-bold text-lg text-slate-800">IT Management Portal</span>
-      <div class="flex gap-4 text-sm font-medium">
-        <a href="dashboard.html" class="text-blue-600 border-b-2 border-blue-600 pb-1">Inventory</a>
-        <!-- Add links to future pages here -->
+  <!-- SIDEBAR NAVIGATION -->
+  <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col justify-between p-4 min-h-screen fixed inset-y-0 left-0 z-50">
+    <div class="space-y-6">
+      <div class="flex items-center gap-3 px-2">
+        <div class="bg-blue-600 text-white font-bold p-2 rounded-lg text-sm">IT</div>
+        <span class="font-bold text-white text-lg tracking-wide">Portal System</span>
+      </div>
+      <nav class="space-y-1">
+        <a href="dashboard.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-slate-800 text-white font-medium">
+          📊 Dashboard
+        </a>
+        <a href="inventory.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-800 hover:text-white transition font-medium">
+          📦 Inventory List
+        </a>
+      </nav>
+    </div>
+    <div class="border-t border-slate-800 pt-4 space-y-3">
+      <div class="px-2">
+        <p class="text-xs text-slate-500 uppercase font-bold">Logged In As</p>
+        <p id="user-display" class="text-xs text-slate-300 truncate font-mono mt-0.5">Loading...</p>
+      </div>
+      <button onclick="handleSignOut()" class="w-full bg-red-500/10 hover:bg-red-500/20 text-red-400 font-semibold py-2 px-3 rounded-lg text-xs transition text-left">
+        🚪 Sign Out
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN CONTENT AREA -->
+  <main class="flex-1 ml-64 p-8 space-y-6">
+    <!-- TOP FILTER BAR -->
+    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex flex-wrap items-center gap-4">
+        <div>
+          <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Brand</label>
+          <select id="filter-brand" onchange="applyFilters()" class="px-3 py-1.5 border rounded-lg text-sm bg-slate-50 min-w-[140px]">
+            <option value="All">All</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Workbase</label>
+          <select id="filter-workbase" onchange="applyFilters()" class="px-3 py-1.5 border rounded-lg text-sm bg-slate-50 min-w-[140px]">
+            <option value="All">All</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Status</label>
+          <select id="filter-status" onchange="applyFilters()" class="px-3 py-1.5 border rounded-lg text-sm bg-slate-50 min-w-[140px]">
+            <option value="All">All</option>
+          </select>
+        </div>
+      </div>
+      <button onclick="resetFilters()" class="bg-slate-700 hover:bg-slate-800 text-white text-xs font-semibold px-4 py-2 rounded-lg transition">
+        Reset filters
+      </button>
+    </div>
+
+    <!-- KPI CARDS GRID -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+        <span class="text-xs font-bold uppercase text-slate-400">Total Assets</span>
+        <span id="kpi-total" class="text-4xl font-extrabold text-slate-800 mt-2">0</span>
+      </div>
+      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between border-l-4 border-l-blue-500">
+        <span class="text-xs font-bold uppercase text-slate-400">In Stock</span>
+        <span id="kpi-stock" class="text-4xl font-extrabold text-blue-600 mt-2">0</span>
+      </div>
+      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between border-l-4 border-l-emerald-500">
+        <span class="text-xs font-bold uppercase text-slate-400">In Use</span>
+        <span id="kpi-use" class="text-4xl font-extrabold text-emerald-600 mt-2">0</span>
+      </div>
+      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between border-l-4 border-l-amber-500">
+        <span class="text-xs font-bold uppercase text-slate-400">Repair</span>
+        <span id="kpi-repair" class="text-4xl font-extrabold text-amber-600 mt-2">0</span>
       </div>
     </div>
-    <div class="flex items-center gap-4">
-      <span id="user-display" class="text-sm text-slate-600"></span>
-      <button onclick="handleSignOut()" class="text-xs bg-red-50 text-red-600 hover:bg-red-100 font-semibold px-3 py-1.5 rounded-lg">Sign Out</button>
-    </div>
-  </nav>
 
-  <!-- MAIN DASHBOARD CONTENT -->
-  <main class="max-w-7xl mx-auto p-6 space-y-6">
-    <!-- Toolbar -->
-    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-wrap gap-4 justify-between items-center">
-      <input type="text" id="search-input" oninput="filterInventory()" placeholder="Search company, brand, model..." class="px-4 py-2 border rounded-lg w-full md:w-80 outline-none focus:ring-2 focus:ring-blue-500">
-
-      <div class="flex flex-wrap items-center gap-3">
-        <button onclick="openModal()" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-lg">+ Add Item</button>
-        <button onclick="exportToExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-medium px-4 py-2 rounded-lg">📥 Export Excel</button>
-        <label class="bg-purple-600 hover:bg-purple-700 text-white font-medium px-4 py-2 rounded-lg cursor-pointer">
-          <span>📤 Import Excel</span>
-          <input type="file" id="excel-file-input" accept=".xlsx, .xls, .csv" onchange="importFromExcel(event)" class="hidden">
-        </label>
+    <!-- CHARTS GRID -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <!-- Pie: Count by Workbase -->
+      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+        <h2 class="text-sm font-bold text-slate-600 mb-4">Count of ID by Workbase</h2>
+        <div class="h-64 relative">
+          <canvas id="chart-workbase"></canvas>
+        </div>
       </div>
-    </div>
 
-    <!-- Data Table -->
-    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-      <table class="w-full text-left text-sm text-slate-600">
-        <thead class="bg-slate-50 border-b border-slate-200 text-xs uppercase font-semibold text-slate-500">
-          <tr>
-            <th class="px-6 py-3">Company</th>
-            <th class="px-6 py-3">Name</th>
-            <th class="px-6 py-3">Model</th>
-            <th class="px-6 py-3">Brand</th>
-            <th class="px-6 py-3">Workbase</th>
-            <th class="px-6 py-3">Status</th>
-            <th class="px-6 py-3 text-right">Action</th>
-          </tr>
-        </thead>
-        <tbody id="inventory-tbody" class="divide-y divide-slate-200">
-          <tr><td colspan="7" class="px-6 py-8 text-center text-slate-400">Loading data...</td></tr>
-        </tbody>
-      </table>
+      <!-- Horizontal Bar: Count by Status -->
+      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+        <h2 class="text-sm font-bold text-slate-600 mb-4">Count of ID by Status</h2>
+        <div class="h-64 relative">
+          <canvas id="chart-status"></canvas>
+        </div>
+      </div>
+
+      <!-- Doughnut: Count by Company -->
+      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+        <h2 class="text-sm font-bold text-slate-600 mb-4">Count of ID by Company</h2>
+        <div class="h-64 relative">
+          <canvas id="chart-company"></canvas>
+        </div>
+      </div>
+
+      <!-- Vertical Bar: Count by Brand (Spans Full Width) -->
+      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm md:col-span-3">
+        <h2 class="text-sm font-bold text-slate-600 mb-4">Count of ID by Brand</h2>
+        <div class="h-64 relative">
+          <canvas id="chart-brand"></canvas>
+        </div>
+      </div>
     </div>
   </main>
 
-  <!-- ADD ITEM MODAL -->
-  <div id="add-modal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-xl shadow-xl w-full max-w-md p-6 space-y-4">
-      <h3 class="text-lg font-bold text-slate-800">Add New Equipment</h3>
-      <form id="add-form" onsubmit="handleAddItem(event)" class="space-y-3">
-        <input type="text" id="add-company" placeholder="Company" required class="w-full px-3 py-2 border rounded-lg">
-        <input type="text" id="add-name" placeholder="Name (e.g. LAPTOP)" required class="w-full px-3 py-2 border rounded-lg">
-        <input type="text" id="add-model" placeholder="Model" required class="w-full px-3 py-2 border rounded-lg">
-        <input type="text" id="add-brand" placeholder="Brand" required class="w-full px-3 py-2 border rounded-lg">
-        <input type="text" id="add-workbase" placeholder="Workbase (e.g. KL)" required class="w-full px-3 py-2 border rounded-lg">
-        <select id="add-status" class="w-full px-3 py-2 border rounded-lg">
-          <option value="In Use">In Use</option>
-          <option value="In Stock">In Stock</option>
-          <option value="Repair">Repair</option>
-        </select>
-        <div class="flex justify-end gap-2 pt-2">
-          <button type="button" onclick="closeModal()" class="px-4 py-2 border rounded-lg">Cancel</button>
-          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg">Save</button>
-        </div>
-      </form>
-    </div>
-  </div>
-
   <script src="js/config.js"></script>
-  <script src="js/inventory.js"></script>
+  <script src="js/dashboard.js"></script>
 </body>
 </html>
