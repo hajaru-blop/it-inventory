@@ -7,8 +7,20 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+  <!-- Typography: Lora & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
   <style>
-    body { background-color: #eef2f6; }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #eef2f6;
+    }
+    h1, h2, h3, .font-serif {
+      font-family: 'Lora', serif;
+    }
     .neu-flat {
       background: #eef2f6;
       box-shadow: 8px 8px 18px #cbd2db, -8px -8px 18px #ffffff;
@@ -23,38 +35,43 @@
       background: #ff6b2c;
       color: #ffffff;
       box-shadow: 4px 4px 10px #d4521f, -2px -2px 6px #ffffff;
+      transition: all 0.2s ease;
     }
     .neu-btn-black {
       background: #111827;
       color: #ffffff;
       box-shadow: 4px 4px 10px #cbd2db, -2px -2px 6px #ffffff;
+      transition: all 0.2s ease;
     }
   </style>
 </head>
-<body class="min-h-screen text-black flex font-sans">
+<body class="min-h-screen text-black flex">
 
   <!-- SIDEBAR NAVIGATION -->
   <aside class="w-64 p-6 flex flex-col justify-between min-h-screen fixed inset-y-0 left-0 z-50 neu-flat rounded-none rounded-r-3xl">
     <div class="space-y-8">
-      <div class="flex items-center gap-3 px-2">
-        <div class="bg-[#ff6b2c] text-white font-black px-3 py-1.5 rounded-xl text-base shadow-md">IT</div>
-        <span class="font-black text-black text-xl tracking-wide">Portal System</span>
+      <div class="px-2 space-y-3">
+        <img src="logo.png" alt="Reservoir Link Logo" class="h-10 object-contain">
+        <div class="flex items-center gap-2">
+          <div class="bg-[#ff6b2c] text-white font-bold px-2.5 py-1 rounded-lg text-xs">IT</div>
+          <span class="font-serif italic text-black text-lg tracking-wide">Portal System</span>
+        </div>
       </div>
       <nav class="space-y-3">
-        <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 hover:text-black font-bold text-sm uppercase tracking-wider transition">
+        <a href="dashboard.html" class="flex items-center px-4 py-3 rounded-xl text-slate-700 hover:text-black font-bold text-xs uppercase tracking-wider transition">
           Dashboard
         </a>
-        <a href="inventory.html" class="flex items-center gap-3 px-4 py-3 rounded-xl neu-btn-orange font-bold text-sm uppercase tracking-wider">
+        <a href="inventory.html" class="flex items-center px-4 py-3 rounded-xl neu-btn-orange font-bold text-xs uppercase tracking-wider">
           Inventory List
         </a>
       </nav>
     </div>
     <div class="space-y-4 pt-4 border-t border-slate-300">
       <div class="px-2">
-        <p class="text-[10px] text-slate-500 uppercase font-extrabold tracking-widest">Logged In As</p>
-        <p id="user-display" class="text-xs text-black font-extrabold truncate mt-1">Loading...</p>
+        <p class="text-[10px] text-slate-500 uppercase font-bold tracking-widest">Logged In As</p>
+        <p id="user-display" class="text-xs text-black font-bold truncate mt-1">Loading...</p>
       </div>
-      <button onclick="handleSignOut()" class="w-full neu-btn-black font-extrabold py-2.5 px-4 rounded-xl text-xs uppercase tracking-wider text-left">
+      <button onclick="handleSignOut()" class="w-full neu-btn-black font-bold py-2.5 px-4 rounded-xl text-xs uppercase tracking-wider text-center">
         Sign Out
       </button>
     </div>
@@ -63,7 +80,7 @@
   <!-- MAIN CONTENT -->
   <main class="flex-1 ml-64 p-8 space-y-8">
     <div class="flex justify-between items-center">
-      <h1 class="text-3xl font-black text-black tracking-tight">Inventory Management</h1>
+      <h1 class="text-3xl font-normal italic font-serif text-black tracking-tight">Inventory Management</h1>
     </div>
 
     <!-- TOOLBAR -->
@@ -71,7 +88,7 @@
       <input type="text" id="search-input" oninput="filterInventory()" placeholder="Search company, brand, model..." class="neu-pressed px-5 py-3 text-sm font-bold outline-none w-full md:w-80 text-black">
 
       <div class="flex flex-wrap items-center gap-4">
-        <button onclick="openModal()" class="neu-btn-orange font-bold px-5 py-3 rounded-xl text-xs uppercase tracking-wider">+ Add Item</button>
+        <button onclick="openModal()" class="neu-btn-orange font-bold px-5 py-3 rounded-xl text-xs uppercase tracking-wider">Add Item</button>
         <button onclick="exportToExcel()" class="neu-btn-black font-bold px-5 py-3 rounded-xl text-xs uppercase tracking-wider">Export Excel</button>
         <label class="neu-btn-black font-bold px-5 py-3 rounded-xl text-xs uppercase tracking-wider cursor-pointer">
           <span>Import Excel</span>
@@ -83,7 +100,7 @@
     <!-- DATA TABLE -->
     <div class="neu-flat overflow-hidden p-2">
       <table class="w-full text-left text-sm text-slate-800">
-        <thead class="text-xs uppercase font-black text-black border-b border-slate-300">
+        <thead class="text-xs uppercase font-bold text-black border-b border-slate-300">
           <tr>
             <th class="px-6 py-4">Company</th>
             <th class="px-6 py-4">Name</th>
@@ -104,7 +121,7 @@
   <!-- ADD ITEM MODAL -->
   <div id="add-modal" class="hidden fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 z-50">
     <div class="neu-flat p-8 w-full max-w-md space-y-5">
-      <h3 class="text-xl font-black text-black">Add New Equipment</h3>
+      <h3 class="text-xl font-normal italic font-serif text-black">Add New Equipment</h3>
       <form id="add-form" onsubmit="handleAddItem(event)" class="space-y-4">
         <input type="text" id="add-company" placeholder="Company" required class="neu-pressed w-full px-4 py-3 text-sm font-bold outline-none">
         <input type="text" id="add-name" placeholder="Name (e.g. LAPTOP)" required class="neu-pressed w-full px-4 py-3 text-sm font-bold outline-none">
@@ -117,8 +134,8 @@
           <option value="Repair">Repair</option>
         </select>
         <div class="flex justify-end gap-3 pt-3">
-          <button type="button" onclick="closeModal()" class="neu-btn-black px-5 py-2.5 rounded-xl text-xs uppercase font-extrabold">Cancel</button>
-          <button type="submit" class="neu-btn-orange px-5 py-2.5 rounded-xl text-xs uppercase font-extrabold">Save</button>
+          <button type="button" onclick="closeModal()" class="neu-btn-black px-5 py-2.5 rounded-xl text-xs uppercase font-bold">Cancel</button>
+          <button type="submit" class="neu-btn-orange px-5 py-2.5 rounded-xl text-xs uppercase font-bold">Save</button>
         </div>
       </form>
     </div>
