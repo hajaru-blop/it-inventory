@@ -4,17 +4,16 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// Security Guard: Protects pages from unauthorized access
 async function protectPage() {
   const { data: { session } } = await supabaseClient.auth.getSession();
   const currentPage = window.location.pathname;
 
-  // If not logged in and trying to access dashboard, redirect to login page
-  if (!session && currentPage.includes('dashboard.html')) {
+  const isProtectedPage = currentPage.includes('dashboard.html') || currentPage.includes('inventory.html');
+  const isAuthPage = currentPage.includes('index.html') || currentPage === '/' || currentPage.endsWith('/');
+
+  if (!session && isProtectedPage) {
     window.location.href = 'index.html';
-  } 
-  // If already logged in and on index page, redirect to dashboard
-  else if (session && (currentPage.includes('index.html') || currentPage === '/')) {
+  } else if (session && isAuthPage) {
     window.location.href = 'dashboard.html';
   }
 
@@ -28,5 +27,4 @@ async function handleSignOut() {
   window.location.href = 'index.html';
 }
 
-// Run auth check on page load
 protectPage();
