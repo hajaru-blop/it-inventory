@@ -3,118 +3,137 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IT Inventory - Analytics Dashboard</title>
+  <title>IT Portal - Analytics Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { background-color: #eef2f6; }
+    .neu-flat {
+      background: #eef2f6;
+      box-shadow: 8px 8px 18px #cbd2db, -8px -8px 18px #ffffff;
+      border-radius: 1.25rem;
+    }
+    .neu-pressed {
+      background: #eef2f6;
+      box-shadow: inset 4px 4px 8px #cbd2db, inset -4px -4px 8px #ffffff;
+      border-radius: 0.75rem;
+    }
+    .neu-btn-orange {
+      background: #ff6b2c;
+      color: #ffffff;
+      box-shadow: 4px 4px 10px #d4521f, -2px -2px 6px #ffffff;
+    }
+    .neu-btn-black {
+      background: #111827;
+      color: #ffffff;
+      box-shadow: 4px 4px 10px #cbd2db, -2px -2px 6px #ffffff;
+    }
+  </style>
 </head>
-<body class="bg-slate-100 min-h-screen text-slate-800 flex font-sans">
+<body class="min-h-screen text-black flex font-sans">
 
-  <!-- SIDEBAR NAVIGATION -->
-  <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col justify-between p-4 min-h-screen fixed inset-y-0 left-0 z-50">
-    <div class="space-y-6">
+  <!-- NEUMORPHIC SIDEBAR -->
+  <aside class="w-64 p-6 flex flex-col justify-between min-h-screen fixed inset-y-0 left-0 z-50 neu-flat rounded-none rounded-r-3xl">
+    <div class="space-y-8">
       <div class="flex items-center gap-3 px-2">
-        <div class="bg-blue-600 text-white font-bold p-2 rounded-lg text-sm">IT</div>
-        <span class="font-bold text-white text-lg tracking-wide">Portal System</span>
+        <div class="bg-[#ff6b2c] text-white font-black px-3 py-1.5 rounded-xl text-base shadow-md">IT</div>
+        <span class="font-black text-black text-xl tracking-wide">Portal System</span>
       </div>
-      <nav class="space-y-1">
-        <a href="dashboard.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-slate-800 text-white font-medium">
-          Dashboard
+      <nav class="space-y-3">
+        <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-xl neu-btn-orange font-bold text-sm uppercase tracking-wider">
+          📊 Dashboard
         </a>
-        <a href="inventory.html" class="flex items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-slate-800 hover:text-white transition font-medium">
-          Inventory List
+        <a href="inventory.html" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-700 hover:text-black font-bold text-sm uppercase tracking-wider transition">
+          📦 Inventory List
         </a>
       </nav>
     </div>
-    <div class="border-t border-slate-800 pt-4 space-y-3">
+    <div class="space-y-4 pt-4 border-t border-slate-300">
       <div class="px-2">
-        <p class="text-xs text-slate-500 uppercase font-bold">Logged In As</p>
-        <p id="user-display" class="text-xs text-slate-300 truncate font-mono mt-0.5">Loading...</p>
+        <p class="text-[10px] text-slate-500 uppercase font-extrabold tracking-widest">Logged In As</p>
+        <p id="user-display" class="text-xs text-black font-extrabold truncate mt-1">Loading...</p>
       </div>
-      <button onclick="handleSignOut()" class="w-full bg-red-500/10 hover:bg-red-500/20 text-red-400 font-semibold py-2 px-3 rounded-lg text-xs transition text-left">
-        Sign Out
+      <button onclick="handleSignOut()" class="w-full neu-btn-black font-extrabold py-2.5 px-4 rounded-xl text-xs uppercase tracking-wider text-left">
+        🚪 Sign Out
       </button>
     </div>
   </aside>
 
   <!-- MAIN CONTENT AREA -->
-  <main class="flex-1 ml-64 p-8 space-y-6">
+  <main class="flex-1 ml-64 p-8 space-y-8">
     <!-- TOP FILTER BAR -->
-    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-wrap items-center justify-between gap-4">
-      <div class="flex flex-wrap items-center gap-4">
+    <div class="neu-flat p-5 flex flex-wrap items-center justify-between gap-4">
+      <div class="flex flex-wrap items-center gap-6">
         <div>
-          <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Brand</label>
-          <select id="filter-brand" onchange="applyFilters()" class="px-3 py-1.5 border rounded-lg text-sm bg-slate-50 min-w-[140px]">
+          <label class="block text-xs font-black text-slate-600 uppercase mb-2 tracking-wider">Brand</label>
+          <select id="filter-brand" onchange="applyFilters()" class="neu-pressed px-4 py-2 text-xs font-bold text-black outline-none min-w-[140px]">
             <option value="All">All</option>
           </select>
         </div>
         <div>
-          <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Workbase</label>
-          <select id="filter-workbase" onchange="applyFilters()" class="px-3 py-1.5 border rounded-lg text-sm bg-slate-50 min-w-[140px]">
+          <label class="block text-xs font-black text-slate-600 uppercase mb-2 tracking-wider">Workbase</label>
+          <select id="filter-workbase" onchange="applyFilters()" class="neu-pressed px-4 py-2 text-xs font-bold text-black outline-none min-w-[140px]">
             <option value="All">All</option>
           </select>
         </div>
         <div>
-          <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Status</label>
-          <select id="filter-status" onchange="applyFilters()" class="px-3 py-1.5 border rounded-lg text-sm bg-slate-50 min-w-[140px]">
+          <label class="block text-xs font-black text-slate-600 uppercase mb-2 tracking-wider">Status</label>
+          <select id="filter-status" onchange="applyFilters()" class="neu-pressed px-4 py-2 text-xs font-bold text-black outline-none min-w-[140px]">
             <option value="All">All</option>
           </select>
         </div>
       </div>
-      <button onclick="resetFilters()" class="bg-slate-700 hover:bg-slate-800 text-white text-xs font-semibold px-4 py-2 rounded-lg transition">
+      <button onclick="resetFilters()" class="neu-btn-black text-xs font-extrabold px-5 py-2.5 rounded-xl uppercase tracking-wider">
         Reset filters
       </button>
     </div>
 
     <!-- KPI CARDS GRID -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
-        <span class="text-xs font-bold uppercase text-slate-400">Total Assets</span>
-        <span id="kpi-total" class="text-4xl font-extrabold text-slate-800 mt-2">0</span>
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div class="neu-flat p-6 flex flex-col justify-between">
+        <span class="text-xs font-black uppercase tracking-wider text-slate-500">Total Assets</span>
+        <span id="kpi-total" class="text-5xl font-black text-black mt-3">0</span>
       </div>
-      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between border-l-4 border-l-blue-500">
-        <span class="text-xs font-bold uppercase text-slate-400">In Stock</span>
-        <span id="kpi-stock" class="text-4xl font-extrabold text-blue-600 mt-2">0</span>
+      <div class="neu-flat p-6 flex flex-col justify-between border-l-8 border-l-[#ff6b2c]">
+        <span class="text-xs font-black uppercase tracking-wider text-[#ff6b2c]">In Stock</span>
+        <span id="kpi-stock" class="text-5xl font-black text-black mt-3">0</span>
       </div>
-      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between border-l-4 border-l-emerald-500">
-        <span class="text-xs font-bold uppercase text-slate-400">In Use</span>
-        <span id="kpi-use" class="text-4xl font-extrabold text-emerald-600 mt-2">0</span>
+      <div class="neu-flat p-6 flex flex-col justify-between border-l-8 border-l-emerald-500">
+        <span class="text-xs font-black uppercase tracking-wider text-emerald-600">In Use</span>
+        <span id="kpi-use" class="text-5xl font-black text-black mt-3">0</span>
       </div>
-      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between border-l-4 border-l-amber-500">
-        <span class="text-xs font-bold uppercase text-slate-400">Repair</span>
-        <span id="kpi-repair" class="text-4xl font-extrabold text-amber-600 mt-2">0</span>
+      <div class="neu-flat p-6 flex flex-col justify-between border-l-8 border-l-slate-800">
+        <span class="text-xs font-black uppercase tracking-wider text-slate-800">Repair</span>
+        <span id="kpi-repair" class="text-5xl font-black text-black mt-3">0</span>
       </div>
     </div>
 
     <!-- CHARTS GRID -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <!-- Pie: Count by Workbase -->
-      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-        <h2 class="text-sm font-bold text-slate-600 mb-4">Count of ID by Workbase</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="neu-flat p-6">
+        <h2 class="text-xs font-black uppercase tracking-wider text-slate-600 mb-4">Count of ID by Workbase</h2>
         <div class="h-64 relative">
           <canvas id="chart-workbase"></canvas>
         </div>
       </div>
 
-      <!-- Horizontal Bar: Count by Status -->
-      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-        <h2 class="text-sm font-bold text-slate-600 mb-4">Count of ID by Status</h2>
+      <div class="neu-flat p-6">
+        <h2 class="text-xs font-black uppercase tracking-wider text-slate-600 mb-4">Count of ID by Status</h2>
         <div class="h-64 relative">
           <canvas id="chart-status"></canvas>
         </div>
       </div>
 
-      <!-- Doughnut: Count by Company -->
-      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
-        <h2 class="text-sm font-bold text-slate-600 mb-4">Count of ID by Company</h2>
+      <div class="neu-flat p-6">
+        <h2 class="text-xs font-black uppercase tracking-wider text-slate-600 mb-4">Count of ID by Company</h2>
         <div class="h-64 relative">
           <canvas id="chart-company"></canvas>
         </div>
       </div>
 
-      <!-- Vertical Bar: Count by Brand (Spans Full Width) -->
-      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm md:col-span-3">
-        <h2 class="text-sm font-bold text-slate-600 mb-4">Count of ID by Brand</h2>
+      <div class="neu-flat p-6 md:col-span-3">
+        <h2 class="text-xs font-black uppercase tracking-wider text-slate-600 mb-4">Count of ID by Brand</h2>
         <div class="h-64 relative">
           <canvas id="chart-brand"></canvas>
         </div>
