@@ -5,7 +5,10 @@ let chartStatusInstance = null;
 let chartCompanyInstance = null;
 let chartBrandInstance = null;
 
-// Orange, Black, White and Slate Palette
+// Global Font setting for Chart.js
+Chart.defaults.font.family = "'Plus Jakarta Sans', sans-serif";
+Chart.defaults.font.weight = '700';
+
 const COLOR_PALETTE = ['#FF6B2C', '#111827', '#4B5563', '#9CA3AF', '#D1D5DB', '#E5E7EB'];
 
 async function fetchDashboardData() {
@@ -14,15 +17,23 @@ async function fetchDashboardData() {
     console.error('Error fetching inventory data:', error);
     return;
   }
-  rawData = data || [];
+  
+  // Normalize workbase (e.g. 'kl' -> 'KL') across all data
+  rawData = (data || []).map(item => ({
+    ...item,
+    workbase: item.workbase ? item.workbase.trim().toUpperCase() : 'UNKNOWN',
+    brand: item.brand ? item.brand.trim() : 'UNKNOWN',
+    company: item.company ? item.company.trim() : 'UNKNOWN'
+  }));
+
   populateDropdowns(rawData);
   applyFilters();
 }
 
 function populateDropdowns(data) {
-  const brands = ['All', ...new Set(data.map(i => i.brand).filter(Boolean))];
-  const workbases = ['All', ...new Set(data.map(i => i.workbase).filter(Boolean))];
-  const statuses = ['All', ...new Set(data.map(i => i.status).filter(Boolean))];
+  const brands = ['All', ...new Set(data.map(i => i.brand).filter(Boolean))].sort();
+  const workbases = ['All', ...new Set(data.map(i => i.workbase).filter(Boolean))].sort();
+  const statuses = ['All', ...new Set(data.map(i => i.status).filter(Boolean))].sort();
 
   updateDropdown('filter-brand', brands);
   updateDropdown('filter-workbase', workbases);
@@ -68,7 +79,7 @@ function updateKPIs(data) {
 
 function countByField(data, field) {
   return data.reduce((acc, item) => {
-    const val = item[field] || 'Unknown';
+    const val = item[field] || 'UNKNOWN';
     acc[val] = (acc[val] || 0) + 1;
     return acc;
   }, {});
@@ -136,12 +147,12 @@ function createOrUpdateChart(instance, elementId, config) {
         legend: {
           display: config.type === 'pie' || config.type === 'doughnut',
           position: 'right',
-          labels: { font: { weight: 'bold', size: 11 } }
+          labels: { font: { family: "'Plus Jakarta Sans', sans-serif", weight: 'bold', size: 11 } }
         }
       },
       scales: config.type === 'bar' ? {
-        y: { beginAtZero: true, ticks: { precision: 0, font: { weight: 'bold' } } },
-        x: { beginAtZero: true, ticks: { precision: 0, font: { weight: 'bold' } } }
+        y: { beginAtZero: true, ticks: { precision: 0, font: { family: "'Plus Jakarta Sans', sans-serif", weight: 'bold' } } },
+        x: { beginAtZero: true, ticks: { precision: 0, font: { family: "'Plus Jakarta Sans', sans-serif", weight: 'bold' } } }
       } : {}
     }
   });
